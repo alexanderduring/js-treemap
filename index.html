@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <link href='http://fonts.googleapis.com/css?family=Lobster&subset=all' rel='stylesheet' type='text/css'>
+    <style>
+      body {
+          margin: 0px;
+          padding: 0px 40px;
+          font-family:Arial, sans-serif;
+          color: #232528;
+      }
+
+      h1 {
+          font-family: 'Lobster', Arial, sans-serif;
+          font-size: 40pt;
+          font-weight: normal;
+      }
+      a.button {
+          background: none repeat scroll 0 0 #ff7607;
+          margin: 5px 15px;
+          padding: 5px 15px;
+          color: white;
+          font-family: sans-serif;
+      }
+      a.button:hover {
+          box-shadow: 0 0 0 6px #ff7607, 0 0 0 7px rgba(0, 0, 0, 0);
+          color: #fff;
+          text-decoration: none;
+      }
+      input {
+          border:2px solid #ccc;
+          backgroud-color:#ddd;
+          padding:0 10px;
+          font-family:"Lobster", Arial, sans-serif;
+          font-size: 16px;
+          line-height:26px;
+          height:26px;
+          color:#555;
+      }
+    </style>
+</head>
+<body>
+    <h1>Treemap</h1>
+    <p>
+      <canvas id="myCanvas" width="700" height="500"></canvas>
+    </p>
+    <p>
+      Values: <input type="editfield" id="input" name="data" size="50" value="6, 6, 4, 3, 2, 2, 1"/>
+      <a id="renderButton" class="button"><span>Render</span></a>
+    </p>
+    <script src="Chart.js"></script>
+    <script>
+        document.getElementById('renderButton').addEventListener('click', function() {
+            var value = document.getElementById('input').value;
+            var data = JSON.parse('['+value+']');
+
+            myChart.treemap(data);
+        });
+
+        var canvas = document.getElementById('myCanvas');
+        var context = canvas.getContext('2d');
+
+        var myChart = new Chart(context);
+    </script>
+</body>
+</html>
