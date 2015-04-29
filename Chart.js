@@ -200,7 +200,7 @@ function Chart(context)
         var rectangle = rectangles.shift();
         var width = rectangle.x2-rectangle.x1;
         var height = rectangle.y2-rectangle.y1;
-        var hue = Math.floor(Math.random() * 359);
+        var hue = colors.shift();
 
         context.beginPath();
         context.rect(rectangle.x1, rectangle.y1, width, height);
@@ -217,9 +217,19 @@ function Chart(context)
 
 
 
+    /**
+     * Creates n aequidistant hue values and puts them in a randomly ordered list.
+     */
     function createPalette(numberOfEntries)
     {
         var stepSize = 360 / numberOfEntries;
+
+        colors = [];
+        for (i = 1; i <= numberOfEntries; i++) {
+            var hue = Math.floor(i * stepSize);
+            var position = Math.floor(Math.random() * (colors.length + 0.99));
+            colors.splice(position, 0, hue);
+        }
     }
 
 
@@ -244,6 +254,7 @@ function Chart(context)
             y: 1
         };
 
+        createPalette(data.length);
         map(data);
         draw();
     }
