@@ -234,6 +234,17 @@ function Chart(context)
 
 
 
+    function sortDescending(data)
+    {
+        data.sort(function(a, b) {
+            return b - a;
+        });
+        
+        return data;
+    }
+
+
+
 
     this.treemap = function(data)
     {
@@ -254,6 +265,7 @@ function Chart(context)
             y: 1
         };
 
+        sortDescending(data);
         createPalette(data.length);
         map(data);
         draw();
