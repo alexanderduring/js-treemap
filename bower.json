@@ -10,7 +10,7 @@
     "globals"
   ],
   "license": "GNU LESSER GENERAL PUBLIC LICENSE",
-  "private": true,
+  "private": false,
   "ignore": [
     "**/.*",
     "node_modules",
