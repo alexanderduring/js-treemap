@@ -1,0 +1,21 @@
+{
+  "name": "js-treemap",
+  "homepage": "https://github.com/alexanderduring/js-treemap",
+  "authors": [
+    "Alexander During"
+  ],
+  "description": "",
+  "main": "Chart.js",
+  "moduleType": [
+    "globals"
+  ],
+  "license": "GNU LESSER GENERAL PUBLIC LICENSE",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
