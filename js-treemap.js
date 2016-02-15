@@ -1,5 +1,5 @@
 
-function Chart(context)
+function Treemap(context)
 {
     var overallSize = {width:0, height:0}
     var currentOffset = {x:0, y:0};
@@ -246,7 +246,7 @@ function Chart(context)
 
 
 
-    this.treemap = function(data)
+    this.draw = function(data)
     {
         rectangles = [];
 

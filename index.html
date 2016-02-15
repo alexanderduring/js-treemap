@@ -48,19 +48,19 @@
       Values: <input type="editfield" id="input" name="data" size="50" value="6, 6, 4, 3, 2, 2, 1"/>
       <a id="renderButton" class="button"><span>Render</span></a>
     </p>
-    <script src="Chart.js"></script>
+    <script src="js-treemap.js"></script>
     <script>
         document.getElementById('renderButton').addEventListener('click', function() {
             var value = document.getElementById('input').value;
             var data = JSON.parse('['+value+']');
 
-            myChart.treemap(data);
+            myTreemap.draw(data);
         });
 
         var canvas = document.getElementById('myCanvas');
         var context = canvas.getContext('2d');
 
-        var myChart = new Chart(context);
+        var myTreemap = new Treemap(context);
     </script>
 </body>
 </html>
