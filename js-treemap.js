@@ -4,6 +4,7 @@ function Treemap(context)
     var overallSize = {width:0, height:0}
     var currentOffset = {x:0, y:0};
     var currentSize = {width:0, height:0, area:0}
+    var remainingTilesArea = [];
     var rectangles = [];
     var colors = [];
 
@@ -42,11 +43,11 @@ function Treemap(context)
             if (worstRatio(row, length) >= worstRatio(rowWithChild, length)) {
                 squarify(tail, rowWithChild);
             } else {
-                layoutRow2(row);
+                layoutRow(row);
                 squarify(children, []);
             }
         } else {
-            layoutRow2(row);
+            layoutRow(row);
         }
     }
 
@@ -99,74 +100,13 @@ function Treemap(context)
 
     function layoutRow(row)
     {
-        var sum = sumRow(row);
-        var tempOffset;
-
-        if (shortestSide() == 'height') {
-            var layoutWidth = Math.round(sum / lengthOfShortestSide());
-//            console.log('Shortest side is height: layoutWidth = '+sum+' / '+lengthOfShortestSide()+' = '+layoutWidth);
-            tempOffset = currentOffset.y;
-
-            row.forEach(function(element) {
-                elementHeight = Math.round(element / layoutWidth);
-
-                var x1 = currentOffset.x;
-                var y1 = tempOffset;
-                var x2 = currentOffset.x + layoutWidth;
-                var y2 = tempOffset + elementHeight;
-
-                // Fix rounding errors
-                x2 = getSaveX(x2);
-                y2 = getSaveY(y2);
-
-                rectangles[rectangles.length] = {'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2};
-                tempOffset = tempOffset + elementHeight;
-            });
-
-            currentOffset.x = currentOffset.x + layoutWidth;
-            currentSize.width = currentSize.width - layoutWidth;
-            currentSize.area = currentSize.width * currentSize.height;
-
-        } else {
-            var layoutHeight = Math.round(sum / lengthOfShortestSide());
-//            console.log('Shortest side is width: layoutHeight = '+sum+' / '+lengthOfShortestSide()+' = '+layoutHeight);
-            tempOffset = currentOffset.x;
-
-            row.forEach(function(element) {
-                elementWidth = Math.round(element / layoutHeight);
-
-                var x1 = tempOffset;
-                var y1 = currentOffset.y;
-                var x2 = tempOffset + elementWidth;
-                var y2 = currentOffset.y + layoutHeight;
-
-                // Fix rounding errors
-                x2 = getSaveX(x2);
-                y2 = getSaveY(y2);
-
-                rectangles[rectangles.length] = {x1: x1, y1: y1, x2: x2, y2: y2};
-                tempOffset = tempOffset + elementWidth;
-            });
-
-            currentOffset.y = currentOffset.y + layoutHeight;
-            currentSize.height = currentSize.height - layoutHeight;
-            currentSize.area = currentSize.width * currentSize.height;
-        }
-
-    }
-
-
-
-    function layoutRow2(row)
-    {
         var tempOffset;
 
         if (shortestSide() == 'height') {
 
             // Calculate row width
             var rowArea = sumRow(row);
-            var rowAreaPercentage = rowArea / currentSize.area;
-            console.log('rowAreaPercentage:'+rowAreaPercentage);
+            var rowAreaPercentage = rowArea / remainingTilesArea;
             var layoutWidth = Math.round(currentSize.width * rowAreaPercentage);
             var tempHeight = lengthOfShortestSide();
             tempOffset = currentOffset.y;
@@ -192,13 +132,14 @@ function Treemap(context)
             currentOffset.x = currentOffset.x + layoutWidth;
             currentSize.width = currentSize.width - layoutWidth;
             currentSize.area = currentSize.width * currentSize.height;
+            remainingTilesArea = remainingTilesArea - rowArea;
+            console.log('Row area:'+rowArea+', remaining area:'+currentSize.area);
 
         } else {
 
             // Calculate row width
             var rowArea = sumRow(row);
-            var rowAreaPercentage = rowArea / currentSize.area;
-            console.log('rowAreaPercentage:'+rowAreaPercentage);
+            var rowAreaPercentage = rowArea / remainingTilesArea;
             var layoutHeight = Math.round(currentSize.height * rowAreaPercentage);
             var tempWidth = lengthOfShortestSide();
             tempOffset = currentOffset.x;
@@ -224,6 +165,8 @@ function Treemap(context)
             currentOffset.y = currentOffset.y + layoutHeight;
             currentSize.height = currentSize.height - layoutHeight;
             currentSize.area = currentSize.width * currentSize.height;
+            remainingTilesArea = remainingTilesArea - rowArea;
+            console.log('Row area:'+rowArea+', remaining area:'+currentSize.area);
         }
 
     }
@@ -273,7 +216,6 @@ function Treemap(context)
     {
         normalizedList = normalize(list);
         squarify(normalizedList, [], lengthOfShortestSide());
-        console.log(rectangles);
     }
 
 
@@ -288,27 +230,27 @@ function Treemap(context)
     function drawRectangle()
     {
         var rectangle = rectangles.shift();
-        var width = rectangle.x2-rectangle.x1;
-        var height = rectangle.y2-rectangle.y1;
+        var width = rectangle.x2-rectangle.x1+1;
+        var height = rectangle.y2-rectangle.y1+1;
         var hue = colors.shift();
 
         // Draw rectangle
         context.beginPath();
-        context.rect(rectangle.x1+1, rectangle.y1+1, width, height);
+        context.rect(rectangle.x1, rectangle.y1, width, height);
         context.fillStyle = 'hsl('+hue+', 50%, 80%)';
         context.fill();
-        context.lineWidth = 2;
+        context.lineWidth = 1;
         context.strokeStyle = 'white';
         context.stroke();
 
         // Draw text
-        context.font='10px Verdana';
-        context.fillStyle = '#000000';
-        context.fillText('x:'+(rectangle.x1+1)+',y:'+(rectangle.y1+1), rectangle.x1+3, rectangle.y1+15);
-        context.fillText('w:'+width+',h:'+height, rectangle.x1+3, rectangle.y1+30);
+        //context.font='10px Verdana';
+        //context.fillStyle = '#000000';
+        //context.fillText('x:'+(rectangle.x1)+',y:'+(rectangle.y1), rectangle.x1+3, rectangle.y1+15);
+        //context.fillText('w:'+width+',h:'+height, rectangle.x1+3, rectangle.y1+30);
 
         if (rectangles.length > 0) {
-            setTimeout(function() {drawRectangle()}, 300);
+            setTimeout(function() {drawRectangle()}, 30);
         }
     }
 
@@ -345,8 +287,8 @@ function Treemap(context)
 
     this.draw = function(data)
     {
-        var width = context.canvas.width-2;
-        var height = context.canvas.height-2;
+        var width = context.canvas.width;
+        var height = context.canvas.height;
 
         rectangles = [];
 
@@ -365,6 +307,11 @@ function Treemap(context)
             x: 0,
             y: 0
         };
+
+        // At the beginning both values are the same, but over time they will be different,
+        // because we substract the real size of each row (integer) from the currentSize.area and
+        // the calculated tile areas of each row (float) from the remainingTilesArea.
+        remainingTilesArea = currentSize.area;
 
         sortDescending(data);
         createPalette(data.length);
