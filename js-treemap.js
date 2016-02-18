@@ -133,7 +133,6 @@ function Treemap(context)
             currentSize.width = currentSize.width - layoutWidth;
             currentSize.area = currentSize.width * currentSize.height;
             remainingTilesArea = remainingTilesArea - rowArea;
-            console.log('Row area:'+rowArea+', remaining area:'+currentSize.area);
 
         } else {
 
@@ -166,7 +165,6 @@ function Treemap(context)
             currentSize.height = currentSize.height - layoutHeight;
             currentSize.area = currentSize.width * currentSize.height;
             remainingTilesArea = remainingTilesArea - rowArea;
-            console.log('Row area:'+rowArea+', remaining area:'+currentSize.area);
         }
 
     }
@@ -273,13 +271,20 @@ function Treemap(context)
 
 
 
-    function sortDescending(data)
+    function sortDescendingAndRemoveZeros(data)
     {
+        // First sort ascending
         data.sort(function(a, b) {
-            return b - a;
+            return a - b;
         });
+
+        // Then remove Zeros
+        while (data.length > 0 && data[0] == 0) {
+            data.shift();
+        }
         
-        return data;
+        // Reverse data to sort descending
+        data.reverse();
     }
 
 
@@ -313,7 +318,7 @@ function Treemap(context)
         // the calculated tile areas of each row (float) from the remainingTilesArea.
         remainingTilesArea = currentSize.area;
 
-        sortDescending(data);
+        sortDescendingAndRemoveZeros(data);
         createPalette(data.length);
         map(data);
         draw();
