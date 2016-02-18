@@ -254,6 +254,16 @@ function Treemap(context)
 
 
 
+    function drawErrorMessage(errorText)
+    {
+        // Draw errorText
+        context.font='20px Verdana';
+        context.fillStyle = '#FF0000';
+        context.fillText('Error:'+errorText, 20, 20);
+    }
+
+
+
     /**
      * Creates n aequidistant hue values and puts them in a randomly ordered list.
      */
@@ -319,8 +329,13 @@ function Treemap(context)
         remainingTilesArea = currentSize.area;
 
         sortDescendingAndRemoveZeros(data);
-        createPalette(data.length);
-        map(data);
-        draw();
+
+        if (data.length > 0) {
+            createPalette(data.length);
+            map(data);
+            draw();
+        } else {
+            drawErrorMessage('Input data contains no values greater zero!');
+        }
     }
 };
