@@ -9,7 +9,7 @@
   "moduleType": [
     "globals"
   ],
-  "license": "GNU LESSER GENERAL PUBLIC LICENSE",
+  "license": "MIT",
   "private": false,
   "ignore": [
     "**/.*",
